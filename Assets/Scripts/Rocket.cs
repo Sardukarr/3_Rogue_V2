@@ -24,7 +24,8 @@ public class Rocket : MonoBehaviour
     AudioSource audioSource;
     enum State {  Alive, Dying, Transcending};
     State state = State.Alive;
- //   float timeToDie = 5f;
+    bool ColisionEnabled=true;
+    //   float timeToDie = 5f;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,13 +49,26 @@ public class Rocket : MonoBehaviour
             RespondToThrust();
             Rotate();
         }
-      //  else
-           // audioSource.Stop();
+        //  else
+        // audioSource.Stop();
+        if (Debug.isDebugBuild)
+            RespondToDebugKeys();
     }
+
+    private void RespondToDebugKeys()
+    {
+        if (Input.GetKey(KeyCode.L))
+            LoadNextScene();
+        else if (Input.GetKey(KeyCode.C))
+        {
+             ColisionEnabled = !ColisionEnabled;
+        }
+
+    }   
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive)
+        if (state != State.Alive || !ColisionEnabled)
             return;
         switch (collision.collider.tag)
         {
@@ -93,7 +107,12 @@ public class Rocket : MonoBehaviour
 
     private void LoadCurrentScene()
     {
+        var pos = transform;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+      //  var wrackage=GameObject.Instantiate(GameObject.Find("V2_Wrackage"));
+      //  wrackage.transform.position = pos.position;
+      //  wrackage.transform.rotation = pos.rotation;
+       // transform.
     }
 
     private void LoadNextScene()
